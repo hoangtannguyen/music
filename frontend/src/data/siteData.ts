@@ -1,7 +1,48 @@
 // Site content. Edit this file to update categories, combos, equipment and projects.
 // NOTE: prices, combos, equipment and projects below are SAMPLE data - replace with real data.
 // "image" is an Unsplash photo id (https://images.unsplash.com/photo-<id>).
-window.EVENT_DATA = {
+
+export type CategoryKey = "wedding" | "birthday" | "gala" | "opening" | "conference" | "music";
+export type EquipmentType = "speaker" | "mic" | "mixer" | "light" | "led" | "accessory";
+
+export interface Combo {
+  id: string;
+  category: CategoryKey;
+  name: string;
+  guests: string;
+  description: string;
+  items: string[];
+  price: string;
+  image: string;
+  badge?: string;
+  featured?: boolean;
+}
+
+export interface Equipment {
+  id: string;
+  type: EquipmentType;
+  name: string;
+  spec: string;
+  description: string;
+}
+
+export interface Project {
+  category: CategoryKey;
+  title: string;
+  location: string;
+  date: string;
+  image: string;
+}
+
+export interface SiteData {
+  categories: Record<CategoryKey, string>;
+  equipmentTypes: Record<EquipmentType, string>;
+  combos: Combo[];
+  equipment: Equipment[];
+  projects: Project[];
+}
+
+export const siteData: SiteData = {
   categories: {
     wedding: "Tiệc cưới",
     birthday: "Sinh nhật – Thôi nôi",
