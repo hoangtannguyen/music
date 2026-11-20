@@ -1,7 +1,10 @@
-import { siteData } from "../data/siteData";
+import { Link } from "react-router";
+import { useSiteContent } from "../SiteContent";
 import Brand from "./Brand";
 
 export default function Footer() {
+  const { eventTypes } = useSiteContent();
+
   return (
     <footer className="site-footer" id="contact">
       <div className="footer-grid">
@@ -12,18 +15,17 @@ export default function Footer() {
         <div>
           <h3>Dịch vụ</h3>
           <ul>
-            {Object.entries(siteData.categories).map(([key, name]) => (
-              <li key={key}><a href={"services.html#" + key}>{name}</a></li>
+            {eventTypes.map((eventType) => (
+              <li key={eventType.key}><Link to={"/services#" + eventType.key}>{eventType.name}</Link></li>
             ))}
           </ul>
         </div>
         <div>
           <h3>Khám phá</h3>
           <ul>
-            <li><a href="combos.html">Gói combo</a></li>
-            <li><a href="equipment.html">Thiết bị cho thuê</a></li>
-            <li><a href="projects.html">Dự án đã thực hiện</a></li>
-            <li><a href="booking.html">Đặt thuê &amp; báo giá</a></li>
+            <li><Link to="/equipment">Thiết bị cho thuê</Link></li>
+            <li><Link to="/projects">Dự án đã thực hiện</Link></li>
+            <li><Link to="/booking">Đặt thuê &amp; báo giá</Link></li>
           </ul>
         </div>
         <div>

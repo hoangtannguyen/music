@@ -1,13 +1,13 @@
 import { useState } from "react";
+import { NavLink } from "react-router";
 import Brand from "./Brand";
 
 const navLinks = [
-  { href: "index.html", label: "Trang chủ" },
-  { href: "services.html", label: "Dịch vụ" },
-  { href: "combos.html", label: "Combo" },
-  { href: "equipment.html", label: "Thiết bị" },
-  { href: "projects.html", label: "Dự án" },
-  { href: "booking.html", label: "Báo giá" }
+  { to: "/", label: "Trang chủ" },
+  { to: "/services", label: "Dịch vụ" },
+  { to: "/equipment", label: "Thiết bị" },
+  { to: "/projects", label: "Dự án" },
+  { to: "/booking", label: "Báo giá" }
 ];
 
 export default function Header() {
@@ -20,16 +20,10 @@ export default function Header() {
         {menuOpen ? "×" : "☰"}
       </button>
       <nav className={"nav" + (menuOpen ? " open" : "")} aria-label="Điều hướng chính">
-        {navLinks.map((link, index) => (
-          <a
-            key={link.href}
-            className={index === 0 ? "active" : undefined}
-            href={link.href}
-            aria-current={index === 0 ? "page" : undefined}
-            onClick={() => setMenuOpen(false)}
-          >
+        {navLinks.map((link) => (
+          <NavLink key={link.to} to={link.to} end onClick={() => setMenuOpen(false)}>
             {link.label}
-          </a>
+          </NavLink>
         ))}
       </nav>
       <div className="header-actions">

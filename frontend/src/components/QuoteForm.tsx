@@ -1,29 +1,12 @@
-import { useState, type FormEvent } from "react";
-import { siteData } from "../data/siteData";
-import { submitLead, todayIso } from "../utils";
+import { guestRanges } from "../data/siteData";
+import { useSiteContent } from "../SiteContent";
+import { useLeadSubmit } from "../useLeadSubmit";
+import { todayIso } from "../utils";
+import DatePicker from "./DatePicker";
 
 export default function QuoteForm({ onToast }: { onToast: (message: string) => void }) {
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (!form.checkValidity()) {
-      form.reportValidity();
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      await submitLead(form);
-      onToast("Cảm ơn bạn! Event Pro đã nhận yêu cầu và sẽ liên hệ báo giá trong thời gian sớm nhất.");
-      form.reset();
-    } catch {
-      onToast("Gửi chưa thành công. Vui lòng gọi hotline 0987 654 321 hoặc nhắn Zalo để được hỗ trợ ngay.");
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  const { eventTypes } = useSiteContent();
+  const { submitting, handleSubmit } = useLeadSubmit(onToast);
 
   return (
     <section className="quote-wrap" id="quote">
@@ -39,23 +22,20 @@ export default function QuoteForm({ onToast }: { onToast: (message: string) => v
               <span aria-hidden="true">▦</span>
               <select name="service" required aria-label="Loại sự kiện" defaultValue="">
                 <option value="" disabled>Loại sự kiện</option>
-                {Object.entries(siteData.categories).map(([key, name]) => (
-                  <option key={key} value={key}>{name}</option>
+                {eventTypes.map((eventType) => (
+                  <option key={eventType.key} value={eventType.key}>{eventType.name}</option>
                 ))}
               </select>
             </label>
-            <label className="field">
+            <div className="field">
               <span aria-hidden="true">▦</span>
-              <input type="date" name="date" aria-label="Ngày tổ chức" min={todayIso()} required />
-            </label>
+              <DatePicker name="date" ariaLabel="Ngày tổ chức" placeholder="Ngày tổ chức" min={todayIso()} required />
+            </div>
             <label className="field">
               <span aria-hidden="true">♟</span>
               <select name="guests" required aria-label="Số lượng khách" defaultValue="">
                 <option value="" disabled>Số lượng khách</option>
-                <option>Dưới 100 khách</option>
-                <option>100 - 300 khách</option>
-                <option>300 - 500 khách</option>
-                <option>Trên 500 khách</option>
+                {guestRanges.map((range) => <option key={range}>{range}</option>)}
               </select>
             </label>
             <label className="field">

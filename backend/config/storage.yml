@@ -1,0 +1,8 @@
+test:
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
+
+# Uploaded images (event types, projects). For production on multiple servers, switch to S3 or similar.
+local:
+  service: Disk
+  root: <%= Rails.root.join("storage") %>
