@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router";
 import { clearAuth, loadAuth, saveAuth, UnauthorizedError } from "../adminApi";
 import LeadsPanel from "./admin/LeadsPanel";
@@ -48,6 +48,16 @@ export default function AdminPage({ onToast }: { onToast: (message: string) => v
   const [auth, setAuth] = useState<string | null>(loadAuth);
   const [loginError, setLoginError] = useState("");
   const [section, setSection] = useState<Section>("leads");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
 
   const handleError = useCallback((error: unknown) => {
     if (error instanceof UnauthorizedError) {
@@ -73,10 +83,23 @@ export default function AdminPage({ onToast }: { onToast: (message: string) => v
 
   const panelProps = { auth, onToast, onError: handleError };
 
+  function selectSection(key: Section) {
+    setSection(key);
+    setMenuOpen(false);
+  }
+
   return (
-    <div className="admin">
-      <header className="admin-bar">
-        <strong>Event Pro · Quản trị</strong>
+    <div className={menuOpen ? "admin menu-open" : "admin"}>
+      <aside className="admin-sidebar" id="admin-sidebar">
+        <div className="admin-sidebar-head">
+          <div>
+            <strong>Event Pro</strong>
+            <span>Quản trị</span>
+          </div>
+          <button className="admin-icon-button admin-close" type="button" aria-label="Đóng menu" onClick={() => setMenuOpen(false)}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          </button>
+        </div>
         <nav className="admin-nav" aria-label="Mục quản trị">
           {(Object.keys(SECTIONS) as Section[]).map((key) => (
             <button
@@ -84,25 +107,42 @@ export default function AdminPage({ onToast }: { onToast: (message: string) => v
               type="button"
               className={key === section ? "active" : undefined}
               aria-current={key === section ? "page" : undefined}
-              onClick={() => setSection(key)}
+              onClick={() => selectSection(key)}
             >
               {SECTIONS[key]}
             </button>
           ))}
         </nav>
-        <div className="admin-bar-actions">
+        <div className="admin-sidebar-foot">
           <Link to="/">Xem website</Link>
           <button className="button button-ghost button-sm" type="button" onClick={logout}>Đăng xuất</button>
         </div>
-      </header>
+      </aside>
+      <div className="admin-backdrop" aria-hidden="true" onClick={() => setMenuOpen(false)} />
 
-      <main className="admin-main">
-        {section === "leads" && <LeadsPanel {...panelProps} />}
-        {section === "eventTypes" && <EventTypesPanel {...panelProps} />}
-        {section === "projects" && <ProjectsPanel {...panelProps} />}
-        {section === "equipment" && <EquipmentPanel {...panelProps} />}
-        {section === "equipmentCategories" && <EquipmentCategoriesPanel {...panelProps} />}
-      </main>
+      <div className="admin-content">
+        <header className="admin-bar">
+          <button
+            className="admin-icon-button"
+            type="button"
+            aria-label="Mở menu"
+            aria-controls="admin-sidebar"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+          </button>
+          <strong>{SECTIONS[section]}</strong>
+        </header>
+
+        <main className="admin-main">
+          {section === "leads" && <LeadsPanel {...panelProps} />}
+          {section === "eventTypes" && <EventTypesPanel {...panelProps} />}
+          {section === "projects" && <ProjectsPanel {...panelProps} />}
+          {section === "equipment" && <EquipmentPanel {...panelProps} />}
+          {section === "equipmentCategories" && <EquipmentCategoriesPanel {...panelProps} />}
+        </main>
+      </div>
     </div>
   );
 }
