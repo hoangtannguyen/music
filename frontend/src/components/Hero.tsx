@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const slides = [
   "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=2000&q=85",
@@ -22,8 +23,7 @@ export default function Hero() {
         <h1>Âm Thanh - Ánh Sáng<br />Tiệc Cưới &amp; Sự Kiện</h1>
         <p className="hero-description">Thiết bị chuẩn, kỹ thuật viên vận hành tận nơi, báo giá rõ ràng. Phục vụ tại Huế và các tỉnh lân cận.</p>
         <div className="hero-actions">
-          <a className="button button-primary" href="booking.html">Nhận báo giá miễn phí <span aria-hidden="true">→</span></a>
-          <a className="button button-outline" href="combos.html">Xem các gói combo</a>
+          <Link className="button button-primary" to="/booking">Nhận báo giá miễn phí <span aria-hidden="true">→</span></Link>
         </div>
       </div>
       <div className="slider-dots" role="tablist" aria-label="Chọn ảnh trình chiếu">

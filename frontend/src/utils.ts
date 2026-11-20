@@ -1,3 +1,6 @@
+// Rails API base, set via VITE_API_BASE (see .env.development)
+export const API_BASE: string = import.meta.env.VITE_API_BASE ?? "";
+
 // Rails API endpoint, set via VITE_LEAD_ENDPOINT (see .env.development).
 // Empty = demo mode: the form is validated and a thank-you toast is shown, nothing is sent.
 export const LEAD_ENDPOINT: string = import.meta.env.VITE_LEAD_ENDPOINT ?? "";

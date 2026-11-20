@@ -1,13 +1,21 @@
-import { siteData, type Project } from "../data/siteData";
-import { photo } from "../utils";
+import type { Project } from "../contentApi";
+import { useSiteContent } from "../SiteContent";
 
-export default function ProjectCard({ project }: { project: Project }) {
+interface ProjectCardProps {
+  project: Project;
+  onOpen: (project: Project, trigger: HTMLElement) => void;
+}
+
+export default function ProjectCard({ project, onOpen }: ProjectCardProps) {
+  const { categoryName } = useSiteContent();
+  const meta = [categoryName(project.category), project.location, project.date_label].filter(Boolean).join(" · ");
+
   return (
-    <button className="gallery-item" type="button" data-category={project.category}>
-      <img src={photo(project.image, 800)} alt={project.title} loading="lazy" />
+    <button className="gallery-item" type="button" data-category={project.category} onClick={(event) => onOpen(project, event.currentTarget)}>
+      {project.image_url && <img src={project.image_url} alt={project.title} loading="lazy" />}
       <span className="gallery-caption">
         <strong>{project.title}</strong>
-        <span>{siteData.categories[project.category]} · {project.location} · {project.date}</span>
+        <span>{meta}</span>
       </span>
     </button>
   );

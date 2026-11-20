@@ -7,6 +7,16 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :leads, only: :create
+    resources :event_types, only: :index
+    resources :projects, only: :index
+    resources :equipment, only: :index
+
+    namespace :admin do
+      resources :leads, only: %i[index update]
+      resources :event_types, only: %i[index create update destroy]
+      resources :projects, only: %i[index create update destroy]
+      resources :equipment, only: %i[index create update destroy]
+    end
   end
 
   # Defines the root path route ("/")
