@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { equipmentTypes, type EquipmentType } from "../../data/siteData";
 import { useSiteContent } from "../../SiteContent";
 import FilterTabs from "../../components/FilterTabs";
 import { fetchLeads, leadStatuses, updateLeadStatus, type LeadPage, type LeadStatus } from "../../adminApi";
@@ -10,7 +9,7 @@ const formatDate = (isoDate: string) => isoDate.split("-").reverse().join("/");
 const dateTimeFormat = new Intl.DateTimeFormat("vi-VN", { dateStyle: "short", timeStyle: "short" });
 
 export default function LeadsPanel({ auth, onToast, onError }: AdminPanelProps) {
-  const { categoryName } = useSiteContent();
+  const { categoryName, equipmentCategoryName } = useSiteContent();
   const [filter, setFilter] = useState("all");
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LeadPage | null>(null);
@@ -79,7 +78,7 @@ export default function LeadsPanel({ auth, onToast, onError }: AdminPanelProps) 
                 </td>
                 <td>{lead.location}</td>
                 <td className="admin-note">
-                  {lead.equipment.length > 0 && <span>{lead.equipment.map((type) => equipmentTypes[type as EquipmentType] ?? type).join(", ")}</span>}
+                  {lead.equipment.length > 0 && <span>{lead.equipment.map(equipmentCategoryName).join(", ")}</span>}
                   {lead.note && <small>{lead.note}</small>}
                   {lead.equipment.length === 0 && !lead.note && "—"}
                 </td>

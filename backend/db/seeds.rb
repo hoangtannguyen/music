@@ -95,6 +95,23 @@ projects.each_with_index do |data, index|
 end
 puts "Projects: #{Project.count}"
 
+equipment_categories = [
+  { key: "speaker", name: "Loa" },
+  { key: "mic", name: "Micro" },
+  { key: "mixer", name: "Mixer" },
+  { key: "light", name: "Đèn sân khấu" },
+  { key: "led", name: "Màn hình LED" },
+  { key: "accessory", name: "Phụ kiện" }
+]
+
+equipment_categories.each_with_index do |data, index|
+  category = EquipmentCategory.find_or_initialize_by(key: data[:key])
+  next if category.persisted?
+
+  category.update!(name: data[:name], icon: data[:key], position: index + 1)
+end
+puts "Equipment categories: #{EquipmentCategory.count}"
+
 equipment = [
   { kind: "speaker", name: "Loa full đôi 15\"", spec: "1000W / cặp", description: "Âm thanh chính cho tiệc 100 – 300 khách." },
   { kind: "speaker", name: "Loa sub 18\"", spec: "1200W", description: "Tăng dải trầm mạnh mẽ cho tiệc và sự kiện." },

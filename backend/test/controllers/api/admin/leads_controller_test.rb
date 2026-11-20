@@ -6,6 +6,8 @@ module Api
       setup do
         ::Admin.create!(email: "admin@example.com", password: "test-password")
         create_event_type
+        create_equipment_category("speaker", "Loa")
+        create_equipment_category("light", "Đèn sân khấu")
 
         attributes = { service: "wedding", event_date: Date.current.next_day, guests: "100 - 300 khách", location: "TP. Huế", phone: "0900000000" }
         @old_lead = Lead.create!(attributes.merge(created_at: 2.days.ago))

@@ -1,11 +1,19 @@
-import type { EquipmentType } from "./data/siteData";
+import type { EquipmentIconName } from "./components/EquipmentIcon";
 import { API_BASE } from "./utils";
 
 // Content managed in the admin (backend/app/controllers/concerns/content_serialization.rb)
+export interface EquipmentCategory {
+  id: number;
+  key: string;
+  name: string;
+  icon: EquipmentIconName;
+  position: number;
+}
+
 export interface Equipment {
   id: number;
   name: string;
-  kind: EquipmentType;
+  kind: string;
   spec: string | null;
   description: string | null;
   position: number;
@@ -50,4 +58,8 @@ export function fetchProjects(): Promise<Project[]> {
 
 export function fetchEquipment(): Promise<Equipment[]> {
   return getJson<Equipment[]>("/equipment");
+}
+
+export function fetchEquipmentCategories(): Promise<EquipmentCategory[]> {
+  return getJson<EquipmentCategory[]>("/equipment_categories");
 }

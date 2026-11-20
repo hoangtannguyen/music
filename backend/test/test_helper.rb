@@ -17,6 +17,10 @@ module ActiveSupport
       end
     end
 
+    def create_equipment_category(key, name = key.capitalize, icon: "accessory", position: 0)
+      EquipmentCategory.create!(key: key, name: name, icon: icon, position: position)
+    end
+
     def create_project(event_type:, title: "Tiệc cưới ngoài trời", **attributes)
       Project.new(event_type: event_type, title: title, **attributes).tap do |project|
         project.image.attach(io: file_fixture("photo.jpg").open, filename: "photo.jpg", content_type: "image/jpeg")
