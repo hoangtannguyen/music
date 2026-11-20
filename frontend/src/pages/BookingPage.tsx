@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import { equipmentTypes, guestRanges } from "../data/siteData";
+import { guestRanges } from "../data/siteData";
 import { useSiteContent } from "../SiteContent";
 import DatePicker from "../components/DatePicker";
 import PageHero from "../components/PageHero";
@@ -8,7 +8,7 @@ import { todayIso } from "../utils";
 
 export default function BookingPage({ onToast }: { onToast: (message: string) => void }) {
   const [params] = useSearchParams();
-  const { eventTypes, equipment } = useSiteContent();
+  const { eventTypes, equipment, equipmentCategories } = useSiteContent();
   const { submitting, handleSubmit } = useLeadSubmit(onToast);
 
   // Prefill from ?service=<event type key> (services page) or ?item=<equipment id> (equipment page)
@@ -27,7 +27,7 @@ export default function BookingPage({ onToast }: { onToast: (message: string) =>
       <section className="section">
         <div className="booking-layout">
           {/* key: remount with new defaults when the query string changes or event types finish loading */}
-          <form key={params.toString() + "/" + eventTypes.length + "/" + equipment.length} className="booking-form" onSubmit={handleSubmit}>
+          <form key={[params.toString(), eventTypes.length, equipment.length, equipmentCategories.length].join("/")} className="booking-form" onSubmit={handleSubmit}>
             <input type="hidden" name="source" value="booking-page" />
 
             <div className="form-section">
@@ -63,10 +63,10 @@ export default function BookingPage({ onToast }: { onToast: (message: string) =>
             <div className="form-section">
               <h2><span className="step-num">2</span>Thiết bị cần thuê</h2>
               <div className="check-grid">
-                {Object.entries(equipmentTypes).map(([key, name]) => (
-                  <label key={key} className="check-chip">
-                    <input type="checkbox" name="equipment[]" value={key} defaultChecked={presetItem?.kind === key} />
-                    <span>{name}</span>
+                {equipmentCategories.map((category) => (
+                  <label key={category.key} className="check-chip">
+                    <input type="checkbox" name="equipment[]" value={category.key} defaultChecked={presetItem?.kind === category.key} />
+                    <span>{category.name}</span>
                   </label>
                 ))}
               </div>

@@ -9,6 +9,10 @@ module ContentSerialization
       .merge("items" => event_type.item_list, "image_url" => image_url(event_type))
   end
 
+  def equipment_category_json(category)
+    category.as_json(only: %i[id key name icon position])
+  end
+
   def equipment_json(equipment)
     equipment.as_json(only: %i[id name kind spec description position])
   end

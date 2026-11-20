@@ -1,5 +1,4 @@
-import type { Equipment, EventType, Project } from "./contentApi";
-import type { EquipmentType } from "./data/siteData";
+import type { Equipment, EquipmentCategory, EventType, Project } from "./contentApi";
 import { API_BASE } from "./utils";
 
 const STORAGE_KEY = "event-pro-admin-auth";
@@ -23,7 +22,7 @@ export interface Lead {
   location: string;
   phone: string;
   name: string | null;
-  equipment: EquipmentType[];
+  equipment: string[];
   note: string | null;
   source: string | null;
   status: LeadStatus;
@@ -127,6 +126,18 @@ export function saveEquipment(auth: string, id: number | null, data: FormData): 
 
 export function deleteEquipment(auth: string, id: number): Promise<void> {
   return request<void>(auth, "/admin/equipment/" + id, { method: "DELETE" });
+}
+
+export function fetchAdminEquipmentCategories(auth: string): Promise<EquipmentCategory[]> {
+  return request<EquipmentCategory[]>(auth, "/admin/equipment_categories");
+}
+
+export function saveEquipmentCategory(auth: string, id: number | null, data: FormData): Promise<EquipmentCategory> {
+  return request<EquipmentCategory>(auth, "/admin/equipment_categories" + (id ? "/" + id : ""), { method: id ? "PATCH" : "POST", body: data });
+}
+
+export function deleteEquipmentCategory(auth: string, id: number): Promise<void> {
+  return request<void>(auth, "/admin/equipment_categories/" + id, { method: "DELETE" });
 }
 
 export function updateLeadStatus(auth: string, id: number, status: LeadStatus): Promise<Lead> {

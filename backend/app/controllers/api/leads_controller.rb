@@ -6,6 +6,8 @@ module Api
       lead = Lead.new(lead_params)
 
       if lead.save
+        # Sent in the background: an SMTP failure must not fail the customer's request
+        LeadMailer.new_lead(lead).deliver_later if LeadMailer.enabled?
         render json: { id: lead.id }, status: :created
       else
         render json: { errors: lead.errors }, status: :unprocessable_content

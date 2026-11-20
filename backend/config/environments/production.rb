@@ -4,6 +4,19 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
+  # Send email through Brevo's HTTPS API when BREVO_API_KEY is set (required on Render free, which
+  # blocks outbound SMTP); otherwise through SMTP with the SMTP_* variables.
+  config.action_mailer.delivery_method = ENV["BREVO_API_KEY"].present? ? :brevo : :smtp
+  config.action_mailer.smtp_settings = {
+    address: ENV["SMTP_ADDRESS"],
+    port: ENV.fetch("SMTP_PORT", 587).to_i,
+    domain: ENV["SMTP_DOMAIN"],
+    user_name: ENV["SMTP_USERNAME"],
+    password: ENV["SMTP_PASSWORD"],
+    authentication: :plain,
+    enable_starttls_auto: true
+  }
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.

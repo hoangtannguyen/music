@@ -32,3 +32,8 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 end
+
+group :development do
+  # Load backend/.env (SMTP settings, notification email) when running the dev server
+  gem "dotenv", "~> 3.1"
+end

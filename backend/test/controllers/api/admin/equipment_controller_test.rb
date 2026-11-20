@@ -5,6 +5,7 @@ module Api
     class EquipmentControllerTest < ActionDispatch::IntegrationTest
       setup do
         ::Admin.create!(email: "admin@example.com", password: "test-password")
+        %w[speaker mixer light].each { |key| create_equipment_category(key) }
         @mixer = Equipment.create!(name: "Mixer digital 32 kênh", kind: "mixer", position: 2)
         @speaker = Equipment.create!(name: "Loa sub 18\"", kind: "speaker", spec: "1200W", position: 1)
       end

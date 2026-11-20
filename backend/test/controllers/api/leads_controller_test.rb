@@ -4,6 +4,8 @@ module Api
   class LeadsControllerTest < ActionDispatch::IntegrationTest
     setup do
       create_event_type
+      create_equipment_category("speaker", "Loa")
+      create_equipment_category("light", "Đèn sân khấu")
     end
 
     def valid_params
@@ -46,6 +48,28 @@ module Api
 
       assert_response :unprocessable_content
       assert response.parsed_body["errors"].key?("equipment")
+    end
+
+    test "emails the owner when LEAD_NOTIFY_EMAIL is set" do
+      previous = ENV["LEAD_NOTIFY_EMAIL"]
+      ENV["LEAD_NOTIFY_EMAIL"] = "owner@example.com"
+
+      assert_enqueued_email_with LeadMailer, :new_lead, args: ->(args) { args.first.is_a?(Lead) } do
+        post api_leads_url, params: valid_params
+      end
+      assert_response :created
+    ensure
+      ENV["LEAD_NOTIFY_EMAIL"] = previous
+    end
+
+    test "does not email when LEAD_NOTIFY_EMAIL is not set or the request is invalid" do
+      previous = ENV.delete("LEAD_NOTIFY_EMAIL")
+      assert_no_enqueued_emails { post api_leads_url, params: valid_params }
+
+      ENV["LEAD_NOTIFY_EMAIL"] = "owner@example.com"
+      assert_no_enqueued_emails { post api_leads_url, params: valid_params.merge(phone: "abc") }
+    ensure
+      ENV["LEAD_NOTIFY_EMAIL"] = previous
     end
 
     test "rejects an unknown service" do

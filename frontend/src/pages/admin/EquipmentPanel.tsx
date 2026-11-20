@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import type { Equipment } from "../../contentApi";
-import { equipmentTypes } from "../../data/siteData";
 import { useSiteContent } from "../../SiteContent";
 import FilterTabs from "../../components/FilterTabs";
 import { deleteEquipment, fetchAdminEquipment, saveEquipment, ValidationError } from "../../adminApi";
@@ -11,7 +10,7 @@ const LABELS: Record<string, string> = {
 };
 
 export default function EquipmentPanel({ auth, onToast, onError }: AdminPanelProps) {
-  const { reload: reloadSite } = useSiteContent();
+  const { equipmentCategories, equipmentCategoryName, reload: reloadSite } = useSiteContent();
   const [items, setItems] = useState<Equipment[] | null>(null);
   const [filter, setFilter] = useState("all");
   // null = list only, "new" = create form, Equipment = edit form
@@ -61,6 +60,7 @@ export default function EquipmentPanel({ auth, onToast, onError }: AdminPanelPro
   }
 
   const current = editing === "new" ? null : editing;
+  const categoryOptions = Object.fromEntries(equipmentCategories.map((category) => [category.key, category.name]));
   const visible = items?.filter((item) => filter === "all" || item.kind === filter);
 
   return (
@@ -82,7 +82,7 @@ export default function EquipmentPanel({ auth, onToast, onError }: AdminPanelPro
               <span className="form-label">Nhóm <span className="req">*</span></span>
               <select className="input" name="kind" defaultValue={current?.kind ?? (filter !== "all" ? filter : "")} required>
                 <option value="" disabled>Chọn nhóm</option>
-                {Object.entries(equipmentTypes).map(([key, name]) => <option key={key} value={key}>{name}</option>)}
+                {equipmentCategories.map((category) => <option key={category.key} value={category.key}>{category.name}</option>)}
               </select>
             </label>
             <label className="form-group">
@@ -106,7 +106,7 @@ export default function EquipmentPanel({ auth, onToast, onError }: AdminPanelPro
         </form>
       )}
 
-      <FilterTabs options={equipmentTypes} value={filter} onChange={setFilter} label="Lọc theo nhóm thiết bị" />
+      <FilterTabs options={categoryOptions} value={filter} onChange={setFilter} label="Lọc theo nhóm thiết bị" />
 
       <div className="admin-table-wrap">
         <table className="admin-table">
@@ -117,7 +117,7 @@ export default function EquipmentPanel({ auth, onToast, onError }: AdminPanelPro
             {visible?.map((item) => (
               <tr key={item.id}>
                 <td>{item.name}</td>
-                <td>{equipmentTypes[item.kind] ?? item.kind}</td>
+                <td>{equipmentCategoryName(item.kind)}</td>
                 <td>{item.spec || "—"}</td>
                 <td>{item.description || "—"}</td>
                 <td>{item.position}</td>

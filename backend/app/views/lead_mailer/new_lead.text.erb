@@ -1,0 +1,14 @@
+Yêu cầu báo giá mới #<%= @lead.id %>
+
+Khách hàng: <%= @lead.name.presence || "—" %>
+Số điện thoại: <%= @lead.phone %>
+Loại sự kiện: <%= @event_type_name %>
+Ngày tổ chức: <%= @lead.event_date.strftime("%d/%m/%Y") %>
+Số lượng khách: <%= @lead.guests %>
+Địa điểm: <%= @lead.location %>
+Thiết bị cần thuê: <%= @equipment.any? ? @equipment.join(", ") : "—" %>
+Ghi chú: <%= @lead.note.presence || "—" %>
+Gửi từ: <%= @source %>
+Thời gian gửi: <%= @lead.created_at.strftime("%H:%M %d/%m/%Y") %>
+
+Trang quản trị: <%= @admin_url %>

@@ -25,9 +25,9 @@ class Lead < ApplicationRecord
     errors.add(:service, "is not a known event type") if service.present? && !EventType.exists?(key: service)
   end
 
-  # equipment is stored as a comma-separated list of Equipment::KINDS keys
+  # equipment is stored as a comma-separated list of EquipmentCategory keys
   def equipment_types_known
-    unknown = equipment.to_s.split(",") - Equipment::KINDS
+    unknown = equipment.to_s.split(",") - EquipmentCategory.where(key: equipment.to_s.split(",")).pluck(:key)
     errors.add(:equipment, "contains unknown types: #{unknown.join(', ')}") if unknown.any?
   end
 

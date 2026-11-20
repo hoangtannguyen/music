@@ -1,0 +1,53 @@
+# Render Blueprint: Rails API (backend/) + React static site (frontend/).
+# Values marked "sync: false" are asked for when the Blueprint is first created in the Render dashboard.
+services:
+  - type: web
+    name: event-pro-api
+    runtime: ruby
+    plan: free
+    rootDir: backend
+    buildCommand: bundle install && bin/rails db:prepare && bin/rails db:seed
+    startCommand: bundle exec puma -C config/puma.rb
+    healthCheckPath: /up
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      # Email: Render free web services block outbound SMTP, so mail goes through Brevo's HTTPS API
+      - key: BREVO_API_KEY
+        sync: false
+      # Verified sender in Brevo (Senders & IP > Senders)
+      - key: MAIL_FROM
+        sync: false
+      # Who receives "new quote request" emails
+      - key: LEAD_NOTIFY_EMAIL
+        sync: false
+      # Admin account created by db:seed
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      # Frontend URL, e.g. https://event-pro-web.onrender.com (CORS origin and admin link in emails)
+      - key: FRONTEND_ORIGINS
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+
+  - type: web
+    name: event-pro-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      # Backend URL + /api, e.g. https://event-pro-api.onrender.com/api
+      - key: VITE_API_BASE
+        sync: false
+      # Backend URL + /api/leads, e.g. https://event-pro-api.onrender.com/api/leads
+      - key: VITE_LEAD_ENDPOINT
+        sync: false

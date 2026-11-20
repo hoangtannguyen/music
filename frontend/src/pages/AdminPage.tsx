@@ -5,12 +5,14 @@ import LeadsPanel from "./admin/LeadsPanel";
 import EventTypesPanel from "./admin/EventTypesPanel";
 import ProjectsPanel from "./admin/ProjectsPanel";
 import EquipmentPanel from "./admin/EquipmentPanel";
+import EquipmentCategoriesPanel from "./admin/EquipmentCategoriesPanel";
 
 const SECTIONS = {
   leads: "Yêu cầu báo giá",
   eventTypes: "Loại sự kiện",
   projects: "Dự án",
-  equipment: "Thiết bị"
+  equipment: "Thiết bị",
+  equipmentCategories: "Nhóm thiết bị"
 } as const;
 
 type Section = keyof typeof SECTIONS;
@@ -99,6 +101,7 @@ export default function AdminPage({ onToast }: { onToast: (message: string) => v
         {section === "eventTypes" && <EventTypesPanel {...panelProps} />}
         {section === "projects" && <ProjectsPanel {...panelProps} />}
         {section === "equipment" && <EquipmentPanel {...panelProps} />}
+        {section === "equipmentCategories" && <EquipmentCategoriesPanel {...panelProps} />}
       </main>
     </div>
   );
